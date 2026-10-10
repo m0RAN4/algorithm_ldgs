@@ -1,0 +1,147 @@
+# ============================================================
+#  算法学习方向指导系统 —— Git 忽略规则
+#  ⚠ 标记的段落是防止密钥/凭证泄露的，请勿删除
+# ============================================================
+
+# ---------- ⚠ 一、密钥与本地配置（最重要）----------
+# 本地环境变量文件：数据库密码等凭证写在里面，绝不入库。
+# 仓库里只保留 .env.example 这个不含真实密码的模板。
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# 各类密钥、证书、凭证文件的兜底规则。
+# 即使以后加了调用外部 API 的功能，只要文件是这些形态就不会被误提交。
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.jks
+*.keystore
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+*_rsa
+*_dsa
+*_ed25519
+secrets.json
+secret.json
+secrets.yml
+secrets.yaml
+credentials.json
+credentials.yml
+service-account*.json
+token.json
+*.token
+auth.json
+
+# 名称里带这些词的一律忽略，防止手滑新建的文件被提交
+*secret*
+*credential*
+*api_key*
+*apikey*
+*private_key*
+
+# 本机专用的配置文件（各编辑器的 local 覆盖配置）
+config.local.*
+settings.local.json
+*.local.py
+
+# ---------- 二、Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 虚拟环境（每台机器各自创建，不入库）
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# 测试 / 类型检查 / 格式化工具的缓存
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+.hypothesis/
+
+# ---------- 编辑器与 IDE ----------
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+.history/
+.project
+.classpath
+.settings/
+
+# ---------- 操作系统 ----------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ---------- 运行时产物与临时文件 ----------
+*.log
+logs/
+*.pid
+*.bak
+*.orig
+*.rej
+*.tmp
+*.swp
+*.sqlite
+*.sqlite3
+*.db
+sessions/
+uploads/
+
+.claude/
+CLAUDE.md
+.cursor/
+.aider*

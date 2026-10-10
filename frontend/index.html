@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>算法学习方向指导系统</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app">
+  <!-- ==================== 侧边导航 ==================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">LD</div>
+      <div>
+        <div class="brand-title">算法学习方向指导</div>
+        <div class="brand-sub">基于产生式规则的专家系统</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-view="consult"><span class="idx">01</span>智能咨询</button>
+      <button class="nav-item" data-view="rules"><span class="idx">02</span>规则库管理</button>
+      <button class="nav-item" data-view="facts"><span class="idx">03</span>事实字典</button>
+      <button class="nav-item" data-view="history"><span class="idx">04</span>咨询记录</button>
+      <button class="nav-item" data-view="about"><span class="idx">05</span>系统概览</button>
+    </nav>
+
+    <div class="side-status" id="side-status">
+      <div><span class="dot bad" id="status-dot"></span> 正在连接…</div>
+    </div>
+  </aside>
+
+  <!-- ==================== 主内容区 ==================== -->
+  <main class="main">
+
+    <!-- ---------- 01 智能咨询 ---------- -->
+    <section class="view active" id="view-consult">
+      <div class="page-head">
+        <h1 class="page-title">智能咨询</h1>
+        <p class="page-desc">勾选符合你当前情况的条件，系统会通过产生式规则正向推理，给出应该优先学习的算法方向。</p>
+      </div>
+
+      <div class="consult-layout">
+        <!-- 条件选择 -->
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">选择你的情况</h2>
+            <div class="spacer"></div>
+            <button class="btn sm" id="btn-clear-facts">清空</button>
+          </div>
+          <div class="card-body" style="padding:12px 18px 6px">
+            <input class="input" id="fact-search" placeholder="搜索条件，例如：面试 / 数学 / 树">
+          </div>
+          <div class="fact-groups" id="fact-groups">
+            <div class="loading"><span class="spin"></span>正在加载事实库…</div>
+          </div>
+          <div class="selected-bar">
+            <span class="chip" id="selected-count">已选 0 项</span>
+            <div class="spacer"></div>
+            <button class="btn sm" id="btn-demo">载入示例</button>
+            <button class="btn primary" id="btn-run">开始推理</button>
+          </div>
+        </div>
+
+        <!-- 推理结果 -->
+        <div style="min-width:0">
+          <div class="card" id="result-card">
+            <div class="card-head">
+              <h2 class="card-title">推理结果</h2>
+              <div class="spacer"></div>
+              <span class="hint" id="result-meta"></span>
+            </div>
+            <div id="result-body">
+              <div class="empty">
+                <div class="empty-icon">◷</div>
+                还没有结果。左侧勾选几项条件后点击「开始推理」。
+                <div class="hint" style="margin-top:6px">不确定怎么选？点「载入示例」快速体验。</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="trace-card" style="margin-top:18px;display:none">
+            <div class="card-head">
+              <h2 class="card-title">推理过程</h2>
+              <div class="spacer"></div>
+              <span class="hint">每一轮都展示匹配结果与冲突消解依据</span>
+            </div>
+            <div class="card-body">
+              <div class="trace-timeline" id="trace-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 02 规则库管理 ---------- -->
+    <section class="view" id="view-rules">
+      <div class="page-head">
+        <h1 class="page-title">规则库管理</h1>
+        <p class="page-desc">规则的增删改查。改动立即生效，无需重启服务，也不需要修改推理机程序。</p>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <input class="input" id="rule-search" placeholder="搜索规则编号或名称" style="width:240px">
+          <button class="btn sm" id="btn-rule-search">搜索</button>
+          <button class="btn sm" id="btn-rule-reload">刷新</button>
+          <div class="spacer"></div>
+          <span class="hint" id="rule-count"></span>
+          <button class="btn primary sm" id="btn-rule-add">＋ 新增规则</button>
+        </div>
+        <div class="scroll-y">
+          <table class="grid">
+            <thead>
+              <tr>
+                <th style="width:74px">编号</th>
+                <th style="width:170px">规则名称</th>
+                <th style="width:70px">优先级</th>
+                <th>IF 前件</th>
+                <th>THEN 后件</th>
+                <th style="width:86px">状态</th>
+                <th style="width:140px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="rule-tbody">
+              <tr><td colspan="7"><div class="loading"><span class="spin"></span>正在加载规则库…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 事实字典 ---------- -->
+    <section class="view" id="view-facts">
+      <div class="page-head">
+        <h1 class="page-title">事实字典</h1>
+        <p class="page-desc">事实是推理机工作时使用的原子命题。<b>input</b> 类由用户勾选，<b>derived</b> 类由规则推导得出。</p>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <input class="input" id="fact-dict-search" placeholder="搜索事实名称或编码" style="width:240px">
+          <div class="spacer"></div>
+          <span class="hint" id="fact-count"></span>
+        </div>
+        <div class="scroll-y">
+          <table class="grid">
+            <thead>
+              <tr>
+                <th style="width:200px">事实编码</th>
+                <th style="width:200px">名称</th>
+                <th style="width:110px">类别</th>
+                <th style="width:90px">类型</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody id="fact-tbody">
+              <tr><td colspan="5"><div class="loading"><span class="spin"></span>正在加载事实字典…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 04 咨询记录 ---------- -->
+    <section class="view" id="view-history">
+      <div class="page-head">
+        <h1 class="page-title">咨询记录</h1>
+        <p class="page-desc">每次推理的输入、结论与完整推理轨迹都保存在数据库里，可随时回看。</p>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2 class="card-title">历史列表</h2>
+          <div class="spacer"></div>
+          <button class="btn sm" id="btn-history-reload">刷新</button>
+        </div>
+        <div class="scroll-y">
+          <table class="grid">
+            <thead>
+              <tr>
+                <th style="width:60px">#</th>
+                <th style="width:120px">编号</th>
+                <th style="width:90px">输入事实</th>
+                <th style="width:90px">推出结论</th>
+                <th style="width:80px">推理轮次</th>
+                <th style="width:90px">耗时</th>
+                <th style="width:170px">时间</th>
+                <th style="width:120px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <tr><td colspan="8"><div class="loading"><span class="spin"></span>正在加载记录…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 05 系统概览 ---------- -->
+    <section class="view" id="view-about">
+      <div class="page-head">
+        <h1 class="page-title">系统概览</h1>
+        <p class="page-desc">知识库规模、使用统计，以及「知识库与推理机分离」的代码结构说明。</p>
+      </div>
+
+      <div class="stat-grid" id="stat-grid"></div>
+
+      <div class="consult-layout" style="margin-top:18px">
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">最常被选中的条件</h2></div>
+          <div class="card-body" id="hot-facts"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">触发次数最多的规则</h2></div>
+          <div class="card-body" id="hot-rules"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="card-head"><h2 class="card-title">系统结构与分工</h2></div>
+        <div class="card-body" id="arch-body"><div class="loading"><span class="spin"></span>加载中…</div></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+<div id="modal-root"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# 本项目不依赖任何第三方 Python 包，整个后端只用 Python 标准库实现
+#
+# 所以本文件是空的，执行 pip install -r requirements.txt 不会安装任何东西，
+# 直接运行 python app.py 即可。
+#
+# 只需要保证环境里有 Python 3.8 或更高版本：
+#     python --version
+#
+# 如果把驱动换成了 PyMySQL 之类的库，就在下面按行写上包名，例如：
+#     PyMySQL>=1.1.0
